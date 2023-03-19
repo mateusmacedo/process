@@ -1,0 +1,11 @@
+./generate.sh command meu_microservico github.com/usuario CreateUser
+
+./generate.sh query meu_microservico github.com/usuario GetUser
+./generate.sh event meu_microservico github.com/usuario UserCreated
+./generate.sh aggregate meu_microservico github.com/usuario User
+./generate.sh entity meu_microservico github.com/usuario Address
+./generate.sh valueobject meu_microservico github.com/usuario Email
+./generate.sh repository meu_microservico github.com/usuario UserRepository
+
+
+chmod +x generate.sh command_generator.sh query_generator.sh event_generator.sh aggregate_generator.sh entity_generator.sh valueobject_generator.sh repository_generator.sh
