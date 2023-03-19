@@ -1,0 +1,14 @@
+{
+	"username": "myuser",
+	"email": "myuser@example.com",
+	"enabled": true,
+	"firstName": "John",
+	"lastName": "Doe",
+	"credentials": [
+		{
+			"type": "password",
+			"value": "mypassword",
+			"temporary": false
+		}
+	]
+}

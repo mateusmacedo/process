@@ -1,0 +1,23 @@
+Tendo os conhecimentos de Petri net, Discrete event dynamic system, Discrete Event System Specification, Automata theory, State-transition table, Markov chain, Nondeterministic finite automaton, Finite-state machine, State diagram, Timed event system, Boolean differential calculus, Queueing theory, Discrete-event simulation. Sugira novos atributos para implementar os recursos que podem empoderar um sistema de workflow baseado em bpm.
+
+Existem vários recursos que podem ser implementados em um sistema de workflow baseado em BPM para aumentar seu poder. A seguir, são listados alguns atributos que podem ser úteis:
+
+Prioridade: Podemos adicionar uma prioridade a cada tarefa dentro do fluxo de trabalho para que o sistema possa ajustar as tarefas com base na importância e urgência do trabalho.
+
+Tempo médio de processamento: Podemos adicionar um atributo que indica quanto tempo leva para processar uma tarefa e utilizá-lo no cálculo do tempo total de processamento.
+
+Mapeamento de transições: Podemos criar um mapeamento que mostra todas as transições possíveis de cada estado seguindo o conceito de autômatos, state diagrams, etc.
+
+Controle de fluxo: Adicionando lógica booleana, índice de progresso, parâmetros críticos, interação com outras variáveis/atributos podemos ter mais controle sobre o fluxo do processo.
+
+Anexos: Podemos incluir caminhos adicionais em uma tarefa para permitir que os usuários anexem arquivos relevantes ou adicionem notas relacionadas ao trabalho.
+
+Timesheet: Podemos incluir um recurso em que os usuários indiquem quanto tempo gastaram em uma tarefa e usem essas informações para calcular estatísticas em relação aos diferentes estados das tarefas.
+
+Comunicação: Podemos incluir triggers, notificações e alertas para facilitar a comunicação entre os membros da equipe envolvidos no processo e notificá-los sobre as próximas etapas que precisam ser tomadas.
+
+Monitoramento: Podemos incluir o rastreamento detalhado das tarefas executadas pelo sistema de workflow para monitorar o desempenho e otimizá-lo ao longo do tempo.
+
+Registros de auditoria: Podemos adicionar recursos que fornecem registro completo de todas as operações realizadas no sistema de fluxo de trabalho para fins de auditoria.
+
+Análise de dados: Podemos incorporar técnicas de análise de dados para ajudar na identificação de padrões e tendências nos dados coletados pelo sistema de workflow, com o objetivo de melhorar sua eficiência ao longo do tempo.

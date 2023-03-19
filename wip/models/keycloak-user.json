@@ -1,0 +1,86 @@
+{
+	"id": "string",
+	"createdTimestamp": "number",
+	"username": "string",
+	"enabled": "boolean",
+	"firstName": "string",
+	"lastName": "string",
+	"email": "string",
+	"emailVerified": "boolean",
+	"attributes": {
+		"attribute1": [
+			"value1",
+			"value2"
+		],
+		"attribute2": [
+			"value3",
+			"value4"
+		]
+	},
+	"credentials": [
+		{
+			"type": "password",
+			"value": "string",
+			"temporary": "boolean"
+		}
+	],
+	"realmRoles": [
+		"role1",
+		"role2"
+	],
+	"clientRoles": {
+		"client1": [
+			"role1",
+			"role2"
+		],
+		"client2": [
+			"role3",
+			"role4"
+		]
+	},
+	"groups": [
+		"group1",
+		"group2"
+	],
+	"federatedIdentities": [
+		{
+			"identityProvider": "provider1",
+			"userId": "string",
+			"userName": "string"
+		}
+	],
+	"consents": [
+		{
+			"clientId": "string",
+			"grantedClientScopes": [
+				"scope1",
+				"scope2"
+			],
+			"createdDate": "number",
+			"lastUpdatedDate": "number"
+		}
+	],
+	"sessions": [
+		{
+			"id": "string",
+			"clientId": "string",
+			"userId": "string",
+			"ipAddress": "string",
+			"authMethod": "string",
+			"authTimestamp": "number",
+			"firstAccess": "number",
+			"lastAccess": "number",
+			"expiresIn": "number",
+			"startPage": "string",
+			"redirectUri": "string",
+			"actions": [
+				"action1",
+				"action2"
+			],
+			"notes": {
+				"note1": "string",
+				"note2": "string"
+			}
+		}
+	]
+}

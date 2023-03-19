@@ -1,0 +1,68 @@
+{
+	"id": "id",
+	"name": "Name",
+	"category": "FlowObjects/ConnectingObjects/SwimLanes/Artifacts",
+	"type": "Event/Activities/Gateways/SequenceFlow/MessageFlow/Association/Pool/Lane/DarkPool/DataObject/Group/Annotation",
+	"subType": "Start/Intermediate/End",
+	"incoming": [
+		"flow_id_1",
+		"flow_id_2"
+	],
+	"outgoing": [
+		"flow_id_3"
+	],
+	"catching": true,
+	"catchDefinition": {
+		"message": "CatchMessage"
+	},
+	"throwing": true,
+	"throwDefinition": {
+		"signal": "ThrowMessage"
+	},
+	"catchs": [
+		"catch_id_1",
+		"catch_id_2"
+	],
+	"throws": [
+		"throw_id_1"
+	],
+	"refs": [
+		"id_1",
+		"id_2"
+	],
+	"triggeredBy": "id_6",
+	"timestamp": {
+		"created": "2021-10-23T12:00:00Z",
+		"updated": "2021-10-24T13:30:00Z",
+		"executed": "2021-10-25T15:00:00Z",
+		"triggered": "2021-10-26T10:30:00Z"
+	},
+	"version": {
+		"major": 1,
+		"minor": 0,
+		"patch": 0
+	},
+	"state": "Created/Pending/InProgress/Completed/Canceled/Approved/Rejected/Running/Failed/Paused/ScheduledRetry/ExecutedRetry",
+	"stateReason": "",
+	"attempts": 0,
+	"maxAttempts": 3,
+	"retryDelay": 30,
+	"transitionCondition": [
+		{
+			"id": "transition_id_1",
+			"name": "Transition 1",
+			"from": "state_id_1",
+			"to": "state_id_2",
+			"transitionCondition": {
+				"operator": "<=",
+				"operand": "10"
+			},
+			"expression": "this.status == 'approved'"
+		}
+	],
+	"activities": [
+		"task_1",
+		"subprocess_2",
+		"task_2"
+	]
+}
