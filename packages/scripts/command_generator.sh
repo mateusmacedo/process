@@ -5,7 +5,7 @@ function generate_command() {
     NAMESPACE=$2
     COMMAND_NAME=$3
 
-    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/cqrs/command/handlers"
+    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/commands"
     mkdir -p ${HANDLER_DIR}
     echo "package handlers
 

@@ -12,25 +12,24 @@ NAMESPACE=$2
 mkdir -p ${MICROSERVICE_NAME}/cmd/${MICROSERVICE_NAME}
 touch ${MICROSERVICE_NAME}/cmd/${MICROSERVICE_NAME}/main.go
 
-mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/cqrs/command/handlers
-touch ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/cqrs/command/commands.go
-mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/cqrs/query/handlers
-touch ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/cqrs/query/queries.go
+mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application
+mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/commands
+mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/queries
+mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/events
 
-mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/eventsourcing/eventstore
-touch ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/eventsourcing/events.go
 
+mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain
 mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/aggregates
 mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/entities
 mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/valueobjects
 mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/repositories
 
-mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/infrastructure/persistence/repository_impl
+mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/infrastructure
+mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/infrastructure/persistence
 mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/infrastructure/api/grpc
-touch ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/infrastructure/api/grpc/server.go
 mkdir -p ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/infrastructure/api/restful
-touch ${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/infrastructure/api/restful/server.go
 
+mkdir -p ${MICROSERVICE_NAME}/pkg/shared
 mkdir -p ${MICROSERVICE_NAME}/pkg/shared/errors
 mkdir -p ${MICROSERVICE_NAME}/pkg/shared/utils
 

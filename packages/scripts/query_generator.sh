@@ -5,7 +5,7 @@ function generate_query() {
     NAMESPACE=$2
     QUERY_NAME=$3
 
-    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/cqrs/query/handlers"
+    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/queries"
     mkdir -p ${HANDLER_DIR}
     echo "package handlers
 

@@ -5,9 +5,9 @@ function generate_event() {
     NAMESPACE=$2
     EVENT_NAME=$3
 
-    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/eventsourcing/eventstore"
+    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/events"
     mkdir -p ${HANDLER_DIR}
-    echo "package eventstore
+    echo "package events
 
 import \"${NAMESPACE}/${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain\"
 
