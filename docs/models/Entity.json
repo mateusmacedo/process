@@ -1,0 +1,60 @@
+{
+  "title": "Entity",
+  "x-stoplight": {
+    "id": "2yrmluw5g9t0h"
+  },
+  "x-tags": [
+    "Entity"
+  ],
+  "allOf": [
+    {
+      "$ref": "./id.json",
+      "x-stoplight": {
+        "id": "2thucz1msnr4d"
+      }
+    },
+    {
+      "$ref": "./AccessControled.json",
+      "x-stoplight": {
+        "id": "xh0zpp8v8j8y7"
+      }
+    },
+    {
+      "$ref": "./Versionable.json",
+      "x-stoplight": {
+        "id": "3ez0lgb2fl39g"
+      }
+    },
+    {
+      "$ref": "./Timestamp.json",
+      "x-stoplight": {
+        "id": "gc3hmjgr2aumc"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+      "groups": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "roles": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "tokens": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "version": 0,
+      "versionBy": "6bce85cb-a9c2-46a8-a194-447e954b1847",
+      "created": "2019-08-24T14:15:22Z",
+      "updated": "2019-08-24T14:15:22Z",
+      "deleted": ""
+    }
+  ]
+}

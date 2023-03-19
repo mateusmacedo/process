@@ -1,0 +1,65 @@
+{
+  "title": "AccessControled",
+  "x-stoplight": {
+    "id": "xd7o0o3a7iyhw"
+  },
+  "type": "object",
+  "examples": [
+    {
+      "groups": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "roles": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ],
+      "tokens": [
+        {
+          "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+        }
+      ]
+    }
+  ],
+  "properties": {
+    "groups": {
+      "type": "array",
+      "x-stoplight": {
+        "id": "ruo7mjkce0dj3"
+      },
+      "uniqueItems": true,
+      "items": {
+        "$ref": "./Group.json",
+        "x-stoplight": {
+          "id": "bwkio9eir3k46"
+        }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "x-stoplight": {
+        "id": "xbtvfzna4ig4j"
+      },
+      "items": {
+        "$ref": "./Role.json",
+        "x-stoplight": {
+          "id": "rj7a4avgbhx48"
+        }
+      }
+    },
+    "tokens": {
+      "type": "array",
+      "x-stoplight": {
+        "id": "mafamsmnm1pkf"
+      },
+      "items": {
+        "$ref": "./Token.json",
+        "x-stoplight": {
+          "id": "bs5nmnwe8jk0f"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,266 @@
+### utils ###
+# docker-compose up -d
+# docker-compose down
+# docker-compose logs -f
+# docker-compose exec postgres bash
+# docker-compose exec keycloak bash
+# cd /opt/jboss/keycloak/bin
+# ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
+# ./kcadm.sh update realms/master -s sslRequired=NONE
+# openssl req -newkey rsa:2048 -nodes -keyout server.key.pem -x509 -days 3650 -out server.crt.pem
+
+version: '3.9'
+
+networks:
+  local:
+    external: true
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:13.2
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRESQL_DB:-postgres}
+      POSTGRES_USER: ${POSTGRESQL_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS:-postgres}
+      POSTGRES_ROOT_PASSWORD: ${POSTGRESQL_ROOT_PASS:-postgres}
+    hostname: postgres
+    networks:
+      local:
+        ipv4_address: 172.10.0.2
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./volumes/postgres/sql:/var/lib/postgresql
+      - ./volumes/postgres/data:/var/lib/postgresql/data
+      - ./postgres/keycloak.sql:/docker-entrypoint-initdb.d/keycloak.sql
+
+  keycloak:
+    depends_on:
+      - postgres
+    container_name: keycloak
+    image: jboss/keycloak:${KEYCLOAK_VERSION:-16.1.1}
+    restart: unless-stopped
+    environment:
+      KEYCLOAK_LOG_LEVEL: ${KEYCLOAK_LOG_LEVEL:-debug}
+      DB_VENDOR: ${KEYCLOAK_DB_VENDOR:-postgres}
+      DB_ADDR: ${KEYCLOAK_DB_ADDR:-postgres}
+      DB_PORT: ${KEYCLOAK_DB_PORT:-5432}
+      DB_DATABASE: ${KEYCLOAK_DB_DATABASE:-keycloak}
+      DB_USER: ${KEYCLOAK_DB_USER:-keycloak}
+      DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:-keycloak}
+      KEYCLOAK_USER: ${KEYCLOAK_USER:-admin}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASS:-admin}
+    hostname: keycloak
+    networks:
+      local:
+        ipv4_address: 172.10.0.3
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "28443:8443"
+      - "28080:8080"
+      - "29990:9990"
+    links:
+      - postgres
+    volumes:
+      - ./volumes/keycloak/data:/data
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    hostname: mysql
+    networks:
+      local:
+        ipv4_address: 172.10.0.4
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 3306:3306
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+      - ./mysql/keycloak.sql:/docker-entrypoint-initdb.d/keycloak.sql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-root}
+    hostname: mongodb
+    networks:
+      local:
+        ipv4_address: 172.10.0.5
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongodb:/docker-entrypoint-initdb.d
+      - ./volumes/mongodb:/data/db
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    hostname: rabbitmq
+    networks:
+      local:
+        ipv4_address: 172.10.0.6
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 5672:5672
+      - 25672:25672
+      - 15672:15672
+    volumes:
+      # - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
+      - ./volumes/rabbitmq:/var/lib/rabbitmq
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server --databases 2
+    hostname: redis
+    networks:
+      local:
+        ipv4_address: 172.10.0.7
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 6379:6379
+    volumes:
+      - ./volumes/redis/data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+  localstack:
+    container_name: localstack
+    image: localstack/localstack
+    restart: unless-stopped
+    environment:
+      SERVICES: ${LOCALSTACK_SERVICES:-s3,sqs}
+      DOCKER_HOST: unix:///var/run/docker.sock
+      DEBUG: ${LOCALSTACK_DEBUG:-1}
+      HOSTNAME_EXTERNAL: localstack
+    hostname: localstack
+    networks:
+      local:
+        ipv4_address: 172.10.0.8
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 4572:4572 # s3
+      - 4576:4576 # sqs
+      - 4566:4566 # cli
+    volumes:
+      - ./volumes/localstack/data:/tmp/localstack/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./localstack:/docker-entrypoint-initaws.d
+
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    hostname: zookeeper
+    networks:
+      local:
+        ipv4_address: 172.10.0.9
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 2181:2181
+    volumes:
+      - ./volumes/zookeeper/data:/var/lib/zookeeper/data
+      - ./volumes/zookeeper/log:/var/lib/zookeeper/log
+
+  kafka:
+    depends_on:
+      - zookeeper
+    container_name: kafka
+    image: confluentinc/cp-kafka:latest
+    restart: unless-stopped
+    environment:
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID:-1}
+      KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT:-zookeeper:2181}
+      KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS:-PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP:-PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT}
+      KAFKA_INTER_BROKER_LISTENER_NAME: ${KAFKA_INTER_BROKER_LISTENER_NAME:-PLAINTEXT}
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:-1}
+    hostname: kafka
+    networks:
+      local:
+        ipv4_address: 172.10.0.10
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 9092:9092
+    volumes:
+      - ./volumes/kafka/data:/var/lib/kafka/data
+
+  kafdrop:
+    depends_on:
+      - kafka
+    container_name: kafdrop
+    image: obsidiandynamics/kafdrop:latest
+    restart: unless-stopped
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+    hostname: kafdrop
+    networks:
+      local:
+        ipv4_address: 172.10.0.11
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 19000:9000
+
+  nats:
+    container_name: nats
+    image: nats:latest
+    restart: unless-stopped
+    # command: [ "-c", "/nats-config/nats.conf" ]
+    hostname: nats
+    networks:
+      local:
+        ipv4_address: 172.10.0.12
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 4222:4222
+      - 6222:6222
+      - 8222:8222
+    volumes:
+      # - ./nats:/nats-config
+      - ./volumes/nats/data:/data
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    restart: unless-stopped
+    # command: mosquitto -c /mosquitto/config/mosquitto.conf
+    hostname: nats
+    networks:
+      local:
+        ipv4_address: 172.10.0.13
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 1883:1883
+      - 29001:9001
+    volumes:
+      # - ./mosquitto:/mosquitto/config
+      - ./volumes/mosquitto/data:/mosquitto/data
+      - ./volumes/mosquitto/log:/mosquitto/log

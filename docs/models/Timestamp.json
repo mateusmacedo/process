@@ -1,0 +1,36 @@
+{
+  "title": "Timestamp",
+  "x-stoplight": {
+    "id": "cr1zf3usxi7kp"
+  },
+  "type": "object",
+  "examples": [],
+  "description": "Em resumo, os valores dessas chaves representam a data e hora no formato ISO 8601 em que uma determinada operação foi realizada em uma entidade de um sistema, em que \"created\" indica a data e hora da criação, \"updated\" indica a data e hora da última atualização e \"deleted\" indica a data e hora da exclusão.",
+  "properties": {
+    "created": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "h0urp4u7qyv2v"
+      },
+      "format": "date-time",
+      "pattern": "/^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?([+-]\\d{2}:\\d{2})?)?$/"
+    },
+    "updated": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "ot707nw3vdx4o"
+      },
+      "format": "date-time",
+      "pattern": "/^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?([+-]\\d{2}:\\d{2})?)?$/"
+    },
+    "deleted": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "eirh5blkestr8"
+      },
+      "format": "date-time",
+      "pattern": "/^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?([+-]\\d{2}:\\d{2})?)?$/",
+      "default": ""
+    }
+  }
+}

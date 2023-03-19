@@ -1,0 +1,7 @@
+Em portugues que vamos falar; nosso principal contexto vai ser o desenvolvimento de apis grpc e restful utilizando php 8.2 com a extensão swoole. Outro detalhe e que tambem usaremos os conceitos de CQRS, Event Sourcing e Clean Architech. A primeira necessidade e definir uma estrutura de diretorios seguindo os requisitos de projetos PHP 
+
+
+
+
+
+Em portugues que vamos falar; nosso principal contexto vai ser o desenvolvimento de apis grpc e restful utilizando golang; Outro detalhe e que tambem usaremos os conceitos de CQRS, Event Sourcing e Clean Architech. A primeira necessidade e definir uma estrutura de diretorios seguindo os requisitos de projetos Golang e os demais requisitos de projetos de microservicos e estilos de arquitetura que vamos utilizar.

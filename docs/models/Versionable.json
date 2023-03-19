@@ -1,0 +1,28 @@
+{
+  "title": "Versionable",
+  "x-stoplight": {
+    "id": "mfvxc2cxkpfcy"
+  },
+  "type": "object",
+  "examples": [],
+  "description": "No geral, essas chaves podem ser usadas em conjunto para controlar e rastrear as mudanças em um objeto ou entidade em um sistema, permitindo que os usuários identifiquem facilmente a versão e a fonte da mudança.",
+  "properties": {
+    "version": {
+      "type": "integer",
+      "x-stoplight": {
+        "id": "udejh0iocjmuc"
+      },
+      "default": 0,
+      "example": 0,
+      "minimum": 0
+    },
+    "versionBy": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "rfos8dnly3guv"
+      },
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    }
+  }
+}
