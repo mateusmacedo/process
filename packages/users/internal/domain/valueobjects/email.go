@@ -2,8 +2,8 @@ package valueobjects
 
 import (
 	"errors"
+	"regexp"
 	"strings"
-	"unicode/utf8"
 )
 
 type EmailAddress struct {
@@ -38,18 +38,6 @@ func (e *EmailAddress) String() string {
 }
 
 func isValidEmail(email string) bool {
-	if utf8.RuneCountInString(email) > 254 {
-		return false
-	}
-	parts := strings.Split(email, "@")
-	if len(parts) != 2 {
-		return false
-	}
-	if len(parts[0]) > 64 {
-		return false
-	}
-	if len(parts[1]) > 255 || len(parts[1]) < 3 {
-		return false
-	}
-	return true
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_` + "`" + `{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$`)
+	return emailRegex.MatchString(email)
 }

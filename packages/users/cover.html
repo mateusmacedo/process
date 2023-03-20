@@ -57,6 +57,14 @@
 				
 				<option value="file0">github.com/mateusmacedo/users/internal/domain/entities/user.go (100.0%)</option>
 				
+				<option value="file1">github.com/mateusmacedo/users/internal/domain/valueobjects/email.go (100.0%)</option>
+				
+				<option value="file2">github.com/mateusmacedo/users/internal/domain/valueobjects/id.go (100.0%)</option>
+				
+				<option value="file3">github.com/mateusmacedo/users/internal/domain/valueobjects/name.go (100.0%)</option>
+				
+				<option value="file4">github.com/mateusmacedo/users/internal/domain/valueobjects/password.go (100.0%)</option>
+				
 				</select>
 			</div>
 			<div id="legend">
@@ -74,12 +82,14 @@
 import (
         "fmt"
         "time"
+
+        "github.com/mateusmacedo/users/internal/domain/valueobjects"
 )
 
 type UserInterface interface {
-        UpdateName(name string)
-        UpdateEmail(email string)
-        UpdatePassword(password string)
+        UpdateName(name valueobjects.Name)
+        UpdateEmail(email valueobjects.EmailAddress)
+        UpdatePassword(password valueobjects.Password)
         Delete()
         AddToGroup(group string)
         RemoveFromGroup(group string)
@@ -95,22 +105,22 @@ type UserInterface interface {
 }
 
 type User struct {
-        ID         string     `json:"id"`
-        Name       string     `json:"name"`
-        Email      string     `json:"email"`
-        Password   string     `json:"password,omitempty"`
-        Groups     []string   `json:"groups,omitempty"`
-        Roles      []string   `json:"roles,omitempty"`
-        Token      string     `json:"-"`
-        LastActive *time.Time `json:"last_active"`
-        CreatedAt  time.Time  `json:"created_at"`
-        UpdatedAt  time.Time  `json:"updated_at"`
-        DeletedAt  *time.Time `json:"deleted_at,omitempty"`
-        Version    int        `json:"version"`
-        VersionBy  string     `json:"version_by"`
+        ID         *valueobjects.ID           `json:"id"`
+        Name       *valueobjects.Name         `json:"name"`
+        Email      *valueobjects.EmailAddress `json:"email"`
+        Password   *valueobjects.Password     `json:"password,omitempty"`
+        Groups     []string                   `json:"groups,omitempty"`
+        Roles      []string                   `json:"roles,omitempty"`
+        Token      string                     `json:"-"`
+        LastActive *time.Time                 `json:"last_active"`
+        CreatedAt  time.Time                  `json:"created_at"`
+        UpdatedAt  time.Time                  `json:"updated_at"`
+        DeletedAt  *time.Time                 `json:"deleted_at,omitempty"`
+        Version    int                        `json:"version"`
+        VersionBy  string                     `json:"version_by"`
 }
 
-func NewUser(id string, name string, email string, password string, groups []string, roles []string, token string, lastActive *time.Time, createdAt time.Time, updatedAt time.Time, deletedAt *time.Time, version int, versionBy string) (*User, error) <span class="cov8" title="1">{
+func NewUser(id *valueobjects.ID, name *valueobjects.Name, email *valueobjects.EmailAddress, password *valueobjects.Password, groups []string, roles []string, token string, lastActive *time.Time, createdAt time.Time, updatedAt time.Time, deletedAt *time.Time, version int, versionBy string) (*User, error) <span class="cov8" title="1">{
         return &amp;User{
                 ID:         id,
                 Name:       name,
@@ -128,7 +138,7 @@ func NewUser(id string, name string, email string, password string, groups []str
         }, nil
 }</span>
 
-func CreateNew(name, email, password string) (*User, error) <span class="cov8" title="1">{
+func CreateNew(name *valueobjects.Name, email *valueobjects.EmailAddress, password *valueobjects.Password) (*User, error) <span class="cov8" title="1">{
         groups := []string{}
         roles := []string{}
         createdAt := time.Now()
@@ -146,17 +156,17 @@ func CreateNew(name, email, password string) (*User, error) <span class="cov8" t
         }, nil
 }</span>
 
-func (u *User) UpdateName(name string) error <span class="cov8" title="1">{
+func (u *User) UpdateName(name *valueobjects.Name) error <span class="cov8" title="1">{
         u.Name = name
         return nil
 }</span>
 
-func (u *User) UpdateEmail(email string) error <span class="cov8" title="1">{
+func (u *User) UpdateEmail(email *valueobjects.EmailAddress) error <span class="cov8" title="1">{
         u.Email = email
         return nil
 }</span>
 
-func (u *User) UpdatePassword(password string) error <span class="cov8" title="1">{
+func (u *User) UpdatePassword(password *valueobjects.Password) error <span class="cov8" title="1">{
         u.Password = password
         return nil
 }</span>
@@ -272,6 +282,169 @@ func (u *User) IsDeleted() bool <span class="cov8" title="1">{
 func (u *User) NextVersion(versionBy string) <span class="cov8" title="1">{
         u.Version++
         u.VersionBy = versionBy
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package valueobjects
+
+import (
+        "errors"
+        "regexp"
+        "strings"
+)
+
+type EmailAddress struct {
+        value string
+}
+
+func NewEmailAddress(value string) (*EmailAddress, error) <span class="cov8" title="1">{
+        if len(strings.TrimSpace(value)) == 0 </span><span class="cov8" title="1">{
+                return nil, errors.New("email address cannot be empty")
+        }</span>
+        <span class="cov8" title="1">if !isValidEmail(value) </span><span class="cov8" title="1">{
+                return nil, errors.New("invalid email address format")
+        }</span>
+        <span class="cov8" title="1">return &amp;EmailAddress{
+                value: strings.ToLower(strings.TrimSpace(value)),
+        }, nil</span>
+}
+
+func (e *EmailAddress) Equals(other ValueObject) bool <span class="cov8" title="1">{
+        if otherEmail, ok := other.(*EmailAddress); ok </span><span class="cov8" title="1">{
+                return e.value == otherEmail.value
+        }</span>
+        <span class="cov8" title="1">return false</span>
+}
+
+func (e *EmailAddress) Value() interface{} <span class="cov8" title="1">{
+        return e.value
+}</span>
+
+func (e *EmailAddress) String() string <span class="cov8" title="1">{
+        return e.value
+}</span>
+
+func isValidEmail(email string) bool <span class="cov8" title="1">{
+        emailRegex := regexp.MustCompile(`^[a-zA-Z0-9.!#$%&amp;'*+/=?^_` + "`" + `{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$`)
+        return emailRegex.MatchString(email)
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package valueobjects
+
+type ID struct {
+        id string
+}
+
+func NewID(id string) *ID <span class="cov8" title="1">{
+        return &amp;ID{
+                id: id,
+        }
+}</span>
+
+func (s *ID) Equals(other ValueObject) bool <span class="cov8" title="1">{
+        if otherID, ok := other.(*ID); ok </span><span class="cov8" title="1">{
+                return s.id == otherID.id
+        }</span>
+        <span class="cov8" title="1">return false</span>
+}
+
+func (s *ID) Value() interface{} <span class="cov8" title="1">{
+        return s.id
+}</span>
+
+func (s *ID) String() string <span class="cov8" title="1">{
+        return s.id
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package valueobjects
+
+import "strings"
+
+type Name struct {
+        name string
+}
+
+func NewName(name string) *Name <span class="cov8" title="1">{
+        return &amp;Name{
+                name: strings.TrimSpace(name),
+        }
+}</span>
+
+func (p *Name) Equals(other ValueObject) bool <span class="cov8" title="1">{
+        if otherName, ok := other.(*Name); ok </span><span class="cov8" title="1">{
+                return p.name == otherName.name
+        }</span>
+        <span class="cov8" title="1">return false</span>
+}
+
+func (p *Name) Value() interface{} <span class="cov8" title="1">{
+        return p.name
+}</span>
+
+func (p *Name) String() string <span class="cov8" title="1">{
+        return p.name
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package valueobjects
+
+import (
+        "errors"
+        "regexp"
+)
+
+type Password struct {
+        value string
+}
+
+func NewPassword(value string) (*Password, error) <span class="cov8" title="1">{
+        if len(value) &lt; 8 </span><span class="cov8" title="1">{
+                return nil, errors.New("password must be at least 8 characters long")
+        }</span>
+        <span class="cov8" title="1">if !containsNumber(value) </span><span class="cov8" title="1">{
+                return nil, errors.New("password must contain at least one number")
+        }</span>
+        <span class="cov8" title="1">if !containsUppercase(value) </span><span class="cov8" title="1">{
+                return nil, errors.New("password must contain at least one uppercase letter")
+        }</span>
+        <span class="cov8" title="1">if !containsSpecialChar(value) </span><span class="cov8" title="1">{
+                return nil, errors.New("password must contain at least one special character")
+        }</span>
+        <span class="cov8" title="1">return &amp;Password{
+                value: value,
+        }, nil</span>
+}
+
+func (p *Password) Equals(other ValueObject) bool <span class="cov8" title="1">{
+        if otherPass, ok := other.(*Password); ok </span><span class="cov8" title="1">{
+                return p.value == otherPass.value
+        }</span>
+        <span class="cov8" title="1">return false</span>
+}
+
+func (p *Password) Value() interface{} <span class="cov8" title="1">{
+        return p.value
+}</span>
+
+func (p *Password) String() string <span class="cov8" title="1">{
+        return p.value
+}</span>
+
+func containsNumber(s string) bool <span class="cov8" title="1">{
+        match, _ := regexp.MatchString("[0-9]", s)
+        return match
+}</span>
+
+func containsUppercase(s string) bool <span class="cov8" title="1">{
+        match, _ := regexp.MatchString("[A-Z]", s)
+        return match
+}</span>
+
+func containsSpecialChar(s string) bool <span class="cov8" title="1">{
+        match, _ := regexp.MatchString("[!@#$%^&amp;*(),.?\":{}|&lt;&gt;]", s)
+        return match
 }</span>
 </pre>
 		
