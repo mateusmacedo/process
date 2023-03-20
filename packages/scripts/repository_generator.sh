@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 function generate_repository() {
     MICROSERVICE_NAME=$1
     NAMESPACE=$2
     REPOSITORY_NAME=$3
 
-    REPOSITORY_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/repositories"
+    REPOSITORY_DIR="${MICROSERVICE_NAME}/internal/domain/repositories"
     mkdir -p ${REPOSITORY_DIR}
     echo "package repositories
 

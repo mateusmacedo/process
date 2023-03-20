@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 function generate_command() {
     MICROSERVICE_NAME=$1
     NAMESPACE=$2
     COMMAND_NAME=$3
 
-    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/commands"
+    HANDLER_DIR="${MICROSERVICE_NAME}/internal/application/commands"
     mkdir -p ${HANDLER_DIR}
     echo "package handlers
 

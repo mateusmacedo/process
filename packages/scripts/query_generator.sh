@@ -1,15 +1,17 @@
 #!/bin/bash
 
+set -e
+
 function generate_query() {
     MICROSERVICE_NAME=$1
     NAMESPACE=$2
     QUERY_NAME=$3
 
-    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/queries"
+    HANDLER_DIR="${MICROSERVICE_NAME}/internal/application/queries"
     mkdir -p ${HANDLER_DIR}
     echo "package handlers
 
-import \"${NAMESPACE}/${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain\"
+import \"${NAMESPACE}/${MICROSERVICE_NAME}/internal/domain\"
 
 type ${QUERY_NAME}Query struct {
     // Adicione os campos da query aqui

@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 function generate_entity() {
     MICROSERVICE_NAME=$1
     NAMESPACE=$2
     ENTITY_NAME=$3
 
-    ENTITY_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/entities"
+    ENTITY_DIR="${MICROSERVICE_NAME}/internal/domain/entities"
     mkdir -p ${ENTITY_DIR}
     echo "package entities
 

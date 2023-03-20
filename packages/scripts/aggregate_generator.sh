@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 function generate_aggregate() {
     MICROSERVICE_NAME=$1
     NAMESPACE=$2
     AGGREGATE_NAME=$3
 
-    AGGREGATE_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/aggregates"
+    AGGREGATE_DIR="${MICROSERVICE_NAME}/internal/domain/aggregates"
     mkdir -p ${AGGREGATE_DIR}
     echo "package aggregates
 

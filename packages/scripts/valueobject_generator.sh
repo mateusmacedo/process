@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 function generate_valueobject() {
     MICROSERVICE_NAME=$1
     NAMESPACE=$2
     VALUEOBJECT_NAME=$3
 
-    VALUEOBJECT_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain/valueobjects"
+    VALUEOBJECT_DIR="${MICROSERVICE_NAME}/internal/domain/valueobjects"
     mkdir -p ${VALUEOBJECT_DIR}
     echo "package valueobjects
 

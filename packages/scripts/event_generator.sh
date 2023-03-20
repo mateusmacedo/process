@@ -1,15 +1,17 @@
 #!/bin/bash
 
+set -e
+
 function generate_event() {
     MICROSERVICE_NAME=$1
     NAMESPACE=$2
     EVENT_NAME=$3
 
-    HANDLER_DIR="${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/application/events"
+    HANDLER_DIR="${MICROSERVICE_NAME}/internal/application/events"
     mkdir -p ${HANDLER_DIR}
     echo "package events
 
-import \"${NAMESPACE}/${MICROSERVICE_NAME}/internal/${MICROSERVICE_NAME}/domain\"
+import \"${NAMESPACE}/${MICROSERVICE_NAME}/internal/domain\"
 
 type ${EVENT_NAME}Event struct {
     // Adicione os campos do evento aqui
