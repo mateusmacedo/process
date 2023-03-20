@@ -1,10 +1,12 @@
-package entities
+package entities_test
 
 import (
 	"testing"
 	"time"
 
 	"bou.ke/monkey"
+	"github.com/mateusmacedo/users/internal/domain/entities"
+	"github.com/mateusmacedo/users/internal/domain/valueobjects"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -14,12 +16,12 @@ func TestCreateNew(t *testing.T) {
 	patch := monkey.Patch(time.Now, func() time.Time { return wayback })
 	defer patch.Unpatch()
 
-	name := "John"
-	email := "john@example.com"
-	password := "password"
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@email.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
 	mockTime := time.Now()
 
-	user, err := CreateNew(name, email, password)
+	user, err := entities.CreateNew(name, email, password)
 
 	assert.NoError(t, err)
 	assert.Empty(t, user.ID)
@@ -37,10 +39,10 @@ func TestCreateNew(t *testing.T) {
 }
 
 func TestNewUser(t *testing.T) {
-	id := "123"
-	name := "John Doe"
-	email := "johndoe@example.com"
-	password := "pass123"
+	id := valueobjects.NewID("1234567890")
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@email.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
 	groups := []string{"admin", "users"}
 	roles := []string{"admin"}
 	token := "abc123"
@@ -51,7 +53,7 @@ func TestNewUser(t *testing.T) {
 	version := 1
 	versionBy := "John"
 
-	expectedUser := &User{
+	expectedUser := &entities.User{
 		ID:         id,
 		Name:       name,
 		Email:      email,
@@ -67,51 +69,60 @@ func TestNewUser(t *testing.T) {
 		VersionBy:  versionBy,
 	}
 
-	user, err := NewUser(id, name, email, password, groups, roles, token, &lastActive, createdAt, updatedAt, &deletedAt, version, versionBy)
+	user, err := entities.NewUser(id, name, email, password, groups, roles, token, &lastActive, createdAt, updatedAt, &deletedAt, version, versionBy)
 
 	require.NoError(t, err)
 	assert.Equal(t, expectedUser, user)
 }
 
 func TestUser_UpdateName(t *testing.T) {
-	user := &User{
-		Name: "John",
+	name := valueobjects.NewName("John Doe")
+	user := &entities.User{
+		Name: name,
 	}
 
-	err := user.UpdateName("Doe")
+	nameToUpdate := valueobjects.NewName("John Doe Updated")
+	err := user.UpdateName(nameToUpdate)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "Doe", user.Name)
+	assert.Equal(t, nameToUpdate, user.Name)
 }
 
 func TestUser_UpdateEmail(t *testing.T) {
-	user := &User{
-		Email: "john@example.com",
+	emailAddress, _ := valueobjects.NewEmailAddress("johndoe@email.com")
+	user := &entities.User{
+		Email: emailAddress,
 	}
 
-	err := user.UpdateEmail("doe@example.com")
+	emailAddressToUpdate, _ := valueobjects.NewEmailAddress("johndoeupdated@email.com")
+	err := user.UpdateEmail(emailAddressToUpdate)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "doe@example.com", user.Email)
+	assert.Equal(t, emailAddressToUpdate, user.Email)
 
 }
 
 func TestUser_UpdatePassword(t *testing.T) {
-	user := &User{
-		Password: "123456",
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Password: password,
 	}
 
-	err := user.UpdatePassword("abcdef")
+	passwordToUpdate, _ := valueobjects.NewPassword("Pass*1234")
+	err := user.UpdatePassword(passwordToUpdate)
 
 	assert.NoError(t, err)
-	assert.Equal(t, "abcdef", user.Password)
+	assert.Equal(t, passwordToUpdate, user.Password)
 }
 
 func TestDelete(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -129,10 +140,13 @@ func TestDelete(t *testing.T) {
 }
 
 func TestIsInGroup(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -143,10 +157,13 @@ func TestIsInGroup(t *testing.T) {
 }
 
 func TestAddToGroup(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -162,10 +179,13 @@ func TestAddToGroup(t *testing.T) {
 }
 
 func TestRemoveFromGroup(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -185,10 +205,13 @@ func TestRemoveFromGroup(t *testing.T) {
 }
 
 func TestAddRole(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -205,10 +228,13 @@ func TestAddRole(t *testing.T) {
 }
 
 func TestRemoveRole(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -228,10 +254,13 @@ func TestRemoveRole(t *testing.T) {
 }
 
 func TestHasRole(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -248,10 +277,13 @@ func TestHasRole(t *testing.T) {
 }
 
 func TestStartSession(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -272,10 +304,13 @@ func TestStartSession(t *testing.T) {
 }
 
 func TestEndSession(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -302,10 +337,13 @@ func TestEndSession(t *testing.T) {
 }
 
 func TestIsActive(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -332,10 +370,13 @@ func TestIsActive(t *testing.T) {
 }
 
 func TestIsDeleted(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,
@@ -350,10 +391,13 @@ func TestIsDeleted(t *testing.T) {
 }
 
 func TestNextVersion(t *testing.T) {
-	user := &User{
-		Name:      "John Doe",
-		Email:     "johndoe@example.com",
-		Password:  "password123",
+	name := valueobjects.NewName("John Doe")
+	email, _ := valueobjects.NewEmailAddress("johndoe@example.com")
+	password, _ := valueobjects.NewPassword("Pass*123")
+	user := &entities.User{
+		Name:      name,
+		Email:     email,
+		Password:  password,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Version:   0,

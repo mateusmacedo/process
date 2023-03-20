@@ -3,12 +3,14 @@ package entities
 import (
 	"fmt"
 	"time"
+
+	"github.com/mateusmacedo/users/internal/domain/valueobjects"
 )
 
 type UserInterface interface {
-	UpdateName(name string)
-	UpdateEmail(email string)
-	UpdatePassword(password string)
+	UpdateName(name valueobjects.Name)
+	UpdateEmail(email valueobjects.EmailAddress)
+	UpdatePassword(password valueobjects.Password)
 	Delete()
 	AddToGroup(group string)
 	RemoveFromGroup(group string)
@@ -24,22 +26,22 @@ type UserInterface interface {
 }
 
 type User struct {
-	ID         string     `json:"id"`
-	Name       string     `json:"name"`
-	Email      string     `json:"email"`
-	Password   string     `json:"password,omitempty"`
-	Groups     []string   `json:"groups,omitempty"`
-	Roles      []string   `json:"roles,omitempty"`
-	Token      string     `json:"-"`
-	LastActive *time.Time `json:"last_active"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
-	Version    int        `json:"version"`
-	VersionBy  string     `json:"version_by"`
+	ID         *valueobjects.ID           `json:"id"`
+	Name       *valueobjects.Name         `json:"name"`
+	Email      *valueobjects.EmailAddress `json:"email"`
+	Password   *valueobjects.Password     `json:"password,omitempty"`
+	Groups     []string                   `json:"groups,omitempty"`
+	Roles      []string                   `json:"roles,omitempty"`
+	Token      string                     `json:"-"`
+	LastActive *time.Time                 `json:"last_active"`
+	CreatedAt  time.Time                  `json:"created_at"`
+	UpdatedAt  time.Time                  `json:"updated_at"`
+	DeletedAt  *time.Time                 `json:"deleted_at,omitempty"`
+	Version    int                        `json:"version"`
+	VersionBy  string                     `json:"version_by"`
 }
 
-func NewUser(id string, name string, email string, password string, groups []string, roles []string, token string, lastActive *time.Time, createdAt time.Time, updatedAt time.Time, deletedAt *time.Time, version int, versionBy string) (*User, error) {
+func NewUser(id *valueobjects.ID, name *valueobjects.Name, email *valueobjects.EmailAddress, password *valueobjects.Password, groups []string, roles []string, token string, lastActive *time.Time, createdAt time.Time, updatedAt time.Time, deletedAt *time.Time, version int, versionBy string) (*User, error) {
 	return &User{
 		ID:         id,
 		Name:       name,
@@ -57,7 +59,7 @@ func NewUser(id string, name string, email string, password string, groups []str
 	}, nil
 }
 
-func CreateNew(name, email, password string) (*User, error) {
+func CreateNew(name *valueobjects.Name, email *valueobjects.EmailAddress, password *valueobjects.Password) (*User, error) {
 	groups := []string{}
 	roles := []string{}
 	createdAt := time.Now()
@@ -75,17 +77,17 @@ func CreateNew(name, email, password string) (*User, error) {
 	}, nil
 }
 
-func (u *User) UpdateName(name string) error {
+func (u *User) UpdateName(name *valueobjects.Name) error {
 	u.Name = name
 	return nil
 }
 
-func (u *User) UpdateEmail(email string) error {
+func (u *User) UpdateEmail(email *valueobjects.EmailAddress) error {
 	u.Email = email
 	return nil
 }
 
-func (u *User) UpdatePassword(password string) error {
+func (u *User) UpdatePassword(password *valueobjects.Password) error {
 	u.Password = password
 	return nil
 }
