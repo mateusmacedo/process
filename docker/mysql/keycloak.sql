@@ -1,8 +1,3 @@
 CREATE DATABASE keycloak;
-CREATE USER keycloak WITH PASSWORD 'keycloak';
-GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
--- ALTER DATABASE keycloak OWNER TO keycloak;
--- GRANT CONNECT ON DATABASE keycloak to keycloak;
--- GRANT USAGE ON SCHEMA public to keycloak;
--- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO keycloak;
--- GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO keycloak;
+CREATE USER 'keycloak' @'%' IDENTIFIED BY 'keycloak';
+GRANT ALL PRIVILEGES ON keycloak.* TO 'keycloak' @'%' IDENTIFIED BY 'keycloak';

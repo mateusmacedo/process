@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mosquitto-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: local-path
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-password
+data:
+  passwordfile: |-
+    mosquitto:$7$101$uIxqAFPr/Hv9kElr$8AfGlHUOjBlWUvzVeGHD2V4938M6kKeNw9yMYhPkQlaUYkAzIZuxJumkXRdKWInwdMGAjYNCjLrs0KqIVIeJBA==
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+data:
+  mosquitto.conf: |-
+    persistence true
+    persistence_location /mosquitto/data/
+    log_type all
+    listener 1883 0.0.0.0
+    protocol mqtt
+    password_file /mosquitto/password/passwordfile
+    allow_anonymous false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      initContainers:
+        - name: copy-config
+          image: busybox:latest
+          command:
+            ["sh", "-c", "cp /mosquitto/config/* /mosquitto/config-copied/"]
+          volumeMounts:
+            - name: mosquitto-config
+              mountPath: /mosquitto/config
+            - name: mosquitto-config-copied
+              mountPath: /mosquitto/config-copied
+        - name: copy-password
+          image: busybox:latest
+          command:
+            ["sh", "-c", "cp /mosquitto/password/* /mosquitto/password-copied/"]
+          volumeMounts:
+            - name: mosquitto-password
+              mountPath: /mosquitto/password
+            - name: mosquitto-password-copied
+              mountPath: /mosquitto/password-copied
+      containers:
+        - name: mosquitto
+          image: eclipse-mosquitto:latest
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          ports:
+            - name: mqtt
+              containerPort: 1883
+          volumeMounts:
+            - name: mosquitto-password-copied
+              mountPath: /mosquitto/password
+            - name: mosquitto-config-copied
+              mountPath: /mosquitto/config
+            - name: mosquitto-data
+              mountPath: /mosquitto/data
+      volumes:
+        - name: mosquitto-password
+          configMap:
+            name: mosquitto-password
+        - name: mosquitto-config
+          configMap:
+            name: mosquitto-config
+        - name: mosquitto-data
+          persistentVolumeClaim:
+            claimName: mosquitto-pvc
+        - name: mosquitto-config-copied
+          emptyDir: {}
+        - name: mosquitto-password-copied
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-internal
+spec:
+  type: ClusterIP
+  selector:
+    app: mosquitto
+  ports:
+    - name: mqtt
+      port: 1883
+      targetPort: 1883
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-external
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  selector:
+    app: mosquitto
+  ports:
+    - name: mqtt
+      port: 1883
+      targetPort: 1883
