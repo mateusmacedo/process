@@ -17,7 +17,7 @@ if ! command -v helm > /dev/null 2>&1; then
 fi
 
 # Install K3s
-curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_VERSION="v1.24.10+k3s1" sh -s - server --datastore-endpoint="mysql://rancher:rancher@tcp(localhost:3306)/rancher"
+curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_VERSION="v1.24.10+k3s1" sh -s - server
 
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 

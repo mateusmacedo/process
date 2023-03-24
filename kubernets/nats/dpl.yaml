@@ -14,7 +14,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nats-config
+  name: nats-cfg
 data:
   nats.conf: |
     pid_file: "/var/run/nats/nats.pid"
@@ -57,7 +57,7 @@ spec:
             - containerPort: 4222
             - containerPort: 8222
           volumeMounts:
-            - name: nats-config
+            - name: nats-cfg
               mountPath: /etc/nats
             - name: nats-data
               mountPath: /var/run/nats
@@ -67,9 +67,9 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
       volumes:
-        - name: nats-config
+        - name: nats-cfg
           configMap:
-            name: nats-config
+            name: nats-cfg
         - name: nats-data
           persistentVolumeClaim:
             claimName: nats-pvc
@@ -78,7 +78,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nats-internal
+  name: nats-svc
 spec:
   selector:
     app: nats
@@ -97,7 +97,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nats-external
+  name: nats-lb
 spec:
   selector:
     app: nats

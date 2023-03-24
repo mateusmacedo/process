@@ -14,7 +14,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mosquitto-password
+  name: mosquitto-pass
 data:
   passwordfile: |-
     mosquitto:$7$101$uIxqAFPr/Hv9kElr$8AfGlHUOjBlWUvzVeGHD2V4938M6kKeNw9yMYhPkQlaUYkAzIZuxJumkXRdKWInwdMGAjYNCjLrs0KqIVIeJBA==
@@ -22,7 +22,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mosquitto-config
+  name: mosquitto-cfg
 data:
   mosquitto.conf: |-
     persistence true
@@ -55,22 +55,20 @@ spec:
       initContainers:
         - name: copy-config
           image: busybox:latest
-          command:
-            ["sh", "-c", "cp /mosquitto/config/* /mosquitto/config-copied/"]
+          command: ["sh", "-c", "cp /mosquitto/config/* /mosquitto/config-cp/"]
           volumeMounts:
-            - name: mosquitto-config
+            - name: mosquitto-cfg
               mountPath: /mosquitto/config
-            - name: mosquitto-config-copied
-              mountPath: /mosquitto/config-copied
+            - name: mosquitto-cp
+              mountPath: /mosquitto/config-cp
         - name: copy-password
           image: busybox:latest
-          command:
-            ["sh", "-c", "cp /mosquitto/password/* /mosquitto/password-copied/"]
+          command: ["sh", "-c", "cp /mosquitto/password/* /mosquitto-pass-cp/"]
           volumeMounts:
-            - name: mosquitto-password
+            - name: mosquitto-pass
               mountPath: /mosquitto/password
-            - name: mosquitto-password-copied
-              mountPath: /mosquitto/password-copied
+            - name: mosquitto-pass-cp
+              mountPath: /mosquitto-pass-cp
       containers:
         - name: mosquitto
           image: eclipse-mosquitto:latest
@@ -85,32 +83,32 @@ spec:
             - name: mqtt
               containerPort: 1883
           volumeMounts:
-            - name: mosquitto-password-copied
+            - name: mosquitto-pass-cp
               mountPath: /mosquitto/password
-            - name: mosquitto-config-copied
+            - name: mosquitto-cp
               mountPath: /mosquitto/config
-            - name: mosquitto-data
+            - name: mosquitto-pvc
               mountPath: /mosquitto/data
       volumes:
-        - name: mosquitto-password
+        - name: mosquitto-pass
           configMap:
-            name: mosquitto-password
-        - name: mosquitto-config
+            name: mosquitto-pass
+        - name: mosquitto-cfg
           configMap:
-            name: mosquitto-config
-        - name: mosquitto-data
+            name: mosquitto-cfg
+        - name: mosquitto-pvc
           persistentVolumeClaim:
             claimName: mosquitto-pvc
-        - name: mosquitto-config-copied
+        - name: mosquitto-cp
           emptyDir: {}
-        - name: mosquitto-password-copied
+        - name: mosquitto-pass-cp
           emptyDir: {}
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mosquitto-internal
+  name: mosquitto-svc
 spec:
   type: ClusterIP
   selector:
@@ -123,7 +121,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mosquitto-external
+  name: mosquitto-lb
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local

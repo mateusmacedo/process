@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: rabbitmq-config
+  name: rabbitmq-cfg
 data:
   enabled_plugins: |
     [rabbitmq_management].
@@ -13,7 +13,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: rabbitmq-secret
+  name: rabbitmq-sct
 type: Opaque
 data:
   rabbitmq-username: cmFiYml0bXE=
@@ -57,12 +57,12 @@ spec:
             - name: RABBITMQ_DEFAULT_USER
               valueFrom:
                 secretKeyRef:
-                  name: rabbitmq-secret
+                  name: rabbitmq-sct
                   key: rabbitmq-username
             - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
-                  name: rabbitmq-secret
+                  name: rabbitmq-sct
                   key: rabbitmq-password
           ports:
             - name: amqp
@@ -70,9 +70,9 @@ spec:
             - name: management
               containerPort: 15672
           volumeMounts:
-            - name: rabbitmq-config
+            - name: rabbitmq-cfg
               mountPath: /etc/rabbitmq
-            - name: rabbitmq-data
+            - name: rabbitmq-pvc
               mountPath: /var/lib/rabbitmq
           resources:
             limits:
@@ -82,17 +82,17 @@ spec:
               cpu: 250m
               memory: 256Mi
       volumes:
-        - name: rabbitmq-config
+        - name: rabbitmq-cfg
           configMap:
-            name: rabbitmq-config
-        - name: rabbitmq-data
+            name: rabbitmq-cfg
+        - name: rabbitmq-pvc
           persistentVolumeClaim:
             claimName: rabbitmq-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq-external
+  name: rabbitmq-lb
 spec:
   selector:
     app: rabbitmq
@@ -108,7 +108,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq-internal
+  name: rabbitmq-svc
 spec:
   selector:
     app: rabbitmq
@@ -127,7 +127,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: rabbitmq-ingress
+  name: rabbitmq-igs
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
@@ -140,6 +140,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: rabbitmq-internal
+                name: rabbitmq-svc
                 port:
                   name: management

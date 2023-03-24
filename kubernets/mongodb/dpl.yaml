@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: mongodb-secret
+  name: mongodb-scr
 type: Opaque
 data:
   MONGO_INITDB_ROOT_USERNAME: cm9vdA==
@@ -53,7 +53,7 @@ spec:
               mountPath: /data
           envFrom:
             - secretRef:
-                name: mongodb-secret
+                name: mongodb-scr
           ports:
             - containerPort: 27017
       volumes:
@@ -64,7 +64,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-internal
+  name: mongodb-svc
 spec:
   type: ClusterIP
   selector:
@@ -77,7 +77,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-external
+  name: mongodb-lb
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local

@@ -24,7 +24,7 @@ spec:
               memory: 256Mi
           env:
             - name: KAFKA_BROKERCONNECT
-              value: kafka-internal.default.svc.cluster.local:9092
+              value: kafka-svc.default.svc.cluster.local:9092
             - name: JVM_OPTS
               value: "-Xms32M -Xmx64M"
             - name: SERVER_SERVLET_CONTEXTPATH
@@ -36,7 +36,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafdrop-internal
+  name: kafdrop-svc
 spec:
   type: ClusterIP
   selector:
@@ -50,7 +50,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kafdrop-ingress
+  name: kafdrop-igs
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
@@ -63,6 +63,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: kafdrop-internal
+                name: kafdrop-svc
                 port:
                   number: 9000

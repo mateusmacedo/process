@@ -14,7 +14,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: localstack-config
+  name: localstack-cfg
 data:
   localstack.env: |
     SERVICES=s3,sqs,sns,ses,lambda
@@ -49,7 +49,7 @@ spec:
             - containerPort: 4566
           envFrom:
             - configMapRef:
-                name: localstack-config
+                name: localstack-cfg
           volumeMounts:
             - name: localstack-data
               mountPath: /data/localstack
@@ -69,7 +69,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: localstack-internal
+  name: localstack-svc
 spec:
   selector:
     app: localstack
@@ -83,7 +83,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: localstack-external
+  name: localstack-lb
 spec:
   selector:
     app: localstack

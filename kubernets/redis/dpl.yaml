@@ -14,7 +14,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-deployment
+  name: redis
 spec:
   replicas: 1
   strategy:
@@ -54,7 +54,7 @@ spec:
               "",
             ]
           volumeMounts:
-            - name: redis-data
+            - name: redis-pvc
               mountPath: /data
           resources:
             limits:
@@ -66,7 +66,7 @@ spec:
           ports:
             - containerPort: 6379
       volumes:
-        - name: redis-data
+        - name: redis-pvc
           persistentVolumeClaim:
             claimName: redis-pvc
 
@@ -74,7 +74,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-internal
+  name: redis-svc
 spec:
   selector:
     app: redis
@@ -88,7 +88,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-external
+  name: redis-lb
 spec:
   selector:
     app: redis

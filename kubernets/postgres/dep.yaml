@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-config
+  name: postgres-cfg
 data:
   postgres.conf: |
     max_connections = 100
@@ -24,7 +24,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: postgres-secrets
+  name: postgres-sct
 type: Opaque
 data:
   postgres-user: cG9zdGdyZXM=
@@ -47,7 +47,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-deployment
+  name: postgres
 spec:
   selector:
     matchLabels:
@@ -72,19 +72,19 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
+                  name: postgres-sct
                   key: postgres-user
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres-secrets
+                  name: postgres-sct
                   key: postgres-password
           ports:
             - containerPort: 5432
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
-            - name: postgres-config
+            - name: postgres-cfg
               mountPath: /etc/postgresql/postgres.conf
               subPath: postgres.conf
           resources:
@@ -98,15 +98,15 @@ spec:
         - name: postgres-data
           persistentVolumeClaim:
             claimName: postgres-pvc
-        - name: postgres-config
+        - name: postgres-cfg
           configMap:
-            name: postgres-config
+            name: postgres-cfg
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-internal
+  name: postgres-svc
 spec:
   selector:
     app: postgres
@@ -120,7 +120,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-external
+  name: postgres-lb
 spec:
   selector:
     app: postgres
